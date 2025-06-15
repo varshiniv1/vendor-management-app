@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import api from '@/lib/api';
 import VendorCard from '@/components/VendorCard';
 import { Vendor } from '@/types/vendor';
@@ -17,16 +17,17 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const { status } = useSession();
 
-  const fetchVendors = async () => {
+  // useCallback to stabilize the function reference
+  const fetchVendors = useCallback(async () => {
     const data = await getVendors(page);
     setVendors(data);
-  };
+  }, [page]);
 
   useEffect(() => {
     if (status === 'authenticated') {
       fetchVendors();
     }
-  }, [page, status]);
+  }, [page, status, fetchVendors]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -80,7 +81,7 @@ export default function Home() {
         ) : (
           <div className="space-y-4">
             {vendors.map((vendor) => (
-              <VendorCard key={vendor._id} vendor={vendor} onDelete={handleDelete} />
+              <VendorCard key={vendor._id} vendor={vendor} onDeleteAction={handleDelete} />
             ))}
           </div>
         )}

@@ -9,11 +9,11 @@ interface Vendor {
   bankName: string;
 }
 
-export default function VendorCard({ vendor, onDelete }: { vendor: Vendor; onDelete: (id: string) => void }) {
+export default function VendorCard({ vendor, onDeleteAction }: { vendor: Vendor; onDeleteAction: (id: string) => void }) {
   const handleDelete = async () => {
     if (confirm('Are you sure you want to delete this vendor?')) {
       await api.delete(`/vendors/${vendor._id}`);
-      onDelete(vendor._id);
+      onDeleteAction(vendor._id);
     }
   };
 
